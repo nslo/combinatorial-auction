@@ -1,0 +1,38 @@
+This solver accepts data in the following form:
+<num-segments>  <num-bidders>  
+<bidder-id>     <valuation>     <segment-id>    ...     <segment-id>
+<bidder-id>     <valuation>     <segment-id>    ...     <segment-id>
+. . .
+a . .
+. . .
+<bidder-id>     <valuation>     <segment-id>    ...     <segment-id>
+
+The first line represents m, the number of spectrum segments available for allocation and n, the number of bidders interested in the segments. The next lines specify one conjunction from a bidder’s overall XOR bid. Note that
+everything is 1-indexed, not 0-indexed.
+
+For example, a simple two-item auction with three bidders could like like this:
+2   3
+1   1.12    1
+1   1.99    1   2
+2   2.3     1
+3   0.82    2
+
+Here, bidder b_1 submitted bid <(1.12, l_1) ⊕ (1.99, l_1 ∧ l_2 )>, while b_2 submitted bid <(2.3, l_1 )> and b_3 submitted bid <(0.82, l_2)>. The revenue maximizing allocation gives l_1 to b_2 and l_2 to b_3, for total revenue of 3.12.
+
+----
+
+Example usage from command line with GHC installed:
+
+ghc --make -O3 ./wdp.hs
+./wdp test\ instances/auction_m10_n2_p0.fcc 0
+
+The last parameter chooses the upper bound to use when running the solver:
+0: upper bound formed by taking the highest bid from each bidder.
+1: LP relaxation upper bound
+
+To get time:
+
+time ./wdp test\ instances/auction_m10_n2_p0.fcc 0
+
+The LP solver used is the simplex function from Haskell's Numeric.LinearProgramming library.  To run this you have to install hmatrix-glpk with caball and this requires gsl and glpk on your system.  wdp_noLP.hs is a version without this.
+
